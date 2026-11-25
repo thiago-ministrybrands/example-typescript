@@ -1,0 +1,23 @@
+# unity-swarm-reviewer repo override, read at the PR head and merged over the
+# central profile. Only `boot` settings are allowed here. This `checks` list
+# replaces the central one as a whole.
+boot:
+  compose_file: docker-compose.yml
+  checks:
+    - name: lint
+      service: web
+      argv: ["npm", "run", "lint"]
+    - name: unit-tests
+      service: web
+      argv: ["npm", "test"]
+      timeout: 2m
+    - name: typecheck
+      service: web
+      argv: ["npm", "run", "build"]
+    - name: index-served
+      service: web
+      probe: { port: 4173, path: /, expect_status: 200, expect_body: Counter }
+    - name: counter-page
+      service: web
+      visit: { port: 4173, path: /, wait_for: '[data-testid="count"]' }
+      timeout: 60s
