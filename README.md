@@ -16,3 +16,19 @@ A minimal TypeScript project used as a scratch target for trying out
 - `tests/` — Vitest unit tests
 - `public/` — static page exercised by the Playwright test
 - `e2e/` — Playwright specs
+
+## unity-swarm-reviewer
+
+- `Dockerfile` / `docker-compose.yml`: a `web` service serving `public/` on
+  `4173`, with dependencies installed so lint, tests and type-check can run
+  in it. The reviewer's Sandbox Runner boots it with `docker compose up --wait`.
+- `.swarm-reviewer.yaml`: the Functional-Verifier's checks (lint, unit tests,
+  type-check, an HTTP probe and a page visit), read from the PR head.
+- `openspec/specs/`: the spec corpus the Spec-Compliance reviewer checks PRs against.
+
+Try it locally:
+
+```sh
+docker compose up --build --wait
+docker compose exec web npm test
+```
